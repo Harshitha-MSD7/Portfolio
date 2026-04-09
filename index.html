@@ -568,7 +568,7 @@
 <!-- ═══════════════════════════════════════════════
      STICKY STACK — PANEL 1: HERO
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-hero" style="height:280vh">
+<div class="pw" id="pw-hero" style="height:170vh">
   <div class="sp" id="p-hero">
     <div class="pi">
       <!-- Light leaks (mix-blend-mode: screen) -->
@@ -598,7 +598,7 @@
 <!-- ═══════════════════════════════════════════════
      PANEL 2: ABOUT
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-about" style="height:220vh" data-section="pw-about">
+<div class="pw" id="pw-about" style="height:135vh" data-section="pw-about">
   <div class="sp" id="p-about">
     <div class="pi">
       <div class="ll ll-t" style="top:-10%;right:-10%;left:auto;opacity:.05"></div>
@@ -629,7 +629,7 @@
 <!-- ═══════════════════════════════════════════════
      PANEL 3: EXPERIENCE
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-exp" style="height:220vh" data-section="pw-exp">
+<div class="pw" id="pw-exp" style="height:135vh" data-section="pw-exp">
   <div class="sp" id="p-exp">
     <div class="pi">
       <div class="ll ll-v" style="bottom:-10%;left:-5%;top:auto;opacity:.06"></div>
@@ -666,7 +666,7 @@
 <!-- ═══════════════════════════════════════════════
      PANEL 4: WEALTHLENS
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-wl" style="height:220vh" data-section="pw-wl">
+<div class="pw" id="pw-wl" style="height:135vh" data-section="pw-wl">
   <div class="sp" id="p-wl">
     <div class="pi">
       <!-- Parallax sandwich layers -->
@@ -695,7 +695,7 @@
 <!-- ═══════════════════════════════════════════════
      PANEL 5: SIGNSYNC
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-ss" style="height:220vh" data-section="pw-wl">
+<div class="pw" id="pw-ss" style="height:135vh" data-section="pw-wl">
   <div class="sp" id="p-ss">
     <div class="pi">
       <div class="ps-bg ps-bg-violet" id="ss-bg"></div>
@@ -721,7 +721,7 @@
 <!-- ═══════════════════════════════════════════════
      PANEL 6: MORE PROJECTS
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-more" style="height:200vh" data-section="pw-wl">
+<div class="pw" id="pw-more" style="height:135vh" data-section="pw-wl">
   <div class="sp" id="p-more">
     <div class="pi">
       <div class="ll ll-t" style="top:50%;left:50%;transform:translate(-50%,-50%);opacity:.04;width:700px;height:700px"></div>
@@ -761,7 +761,7 @@
 <!-- ═══════════════════════════════════════════════
      PANEL 7: SKILLS
 ═════════════════════════════════════════════════ -->
-<div class="pw" id="pw-skills" style="height:200vh" data-section="pw-skills">
+<div class="pw" id="pw-skills" style="height:135vh" data-section="pw-skills">
   <div class="sp" id="p-skills">
     <div class="pi">
       <div class="ll ll-v" style="top:-5%;right:-5%;opacity:.06;width:550px;height:550px"></div>
@@ -828,12 +828,12 @@
 <script>
 gsap.registerPlugin(ScrollTrigger);
 
-/* ── LENIS ──────────────────────────────────────── */
+/* ── LENIS ── */
 const lenis = new Lenis({
-  duration: 1.45,
+  duration: 1.2,
   easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   smoothWheel: true,
-  wheelMultiplier: 0.88,
+  wheelMultiplier: 1.0,
 });
 lenis.on('scroll', ({ progress }) => {
   document.getElementById('hud-fill').style.width = (progress * 100) + '%';
@@ -843,8 +843,8 @@ lenis.on('scroll', ({ progress }) => {
 gsap.ticker.add(t => lenis.raf(t * 1000));
 gsap.ticker.lagSmoothing(0);
 
-/* ── CURSOR ─────────────────────────────────────── */
-const cdot  = document.getElementById('c-dot');
+/* ── CURSOR ── */
+const cdot = document.getElementById('c-dot');
 const cring = document.getElementById('c-ring');
 const clbl  = document.getElementById('c-label');
 let mx=0, my=0, rx=0, ry=0;
@@ -860,206 +860,203 @@ window.addEventListener('mousemove', e => {
   cring.style.left = rx+'px'; cring.style.top = ry+'px';
   requestAnimationFrame(lerpRing);
 })();
-
-/* Project hover → cursor expands */
 document.querySelectorAll('[data-hover-proj]').forEach(el => {
   el.addEventListener('mouseenter', () => document.body.classList.add('proj-hov'));
   el.addEventListener('mouseleave', () => document.body.classList.remove('proj-hov'));
 });
-/* Link hover */
 document.querySelectorAll('a,button').forEach(el => {
-  el.addEventListener('mouseenter', () => { if(!document.body.classList.contains('proj-hov')) document.body.classList.add('link-hov'); });
+  el.addEventListener('mouseenter', () => { if (!document.body.classList.contains('proj-hov')) document.body.classList.add('link-hov'); });
   el.addEventListener('mouseleave', () => document.body.classList.remove('link-hov'));
 });
 
-/* ── HUD section tabs ───────────────────────────── */
+/* ── HUD ── */
 function setHud(id) {
   document.querySelectorAll('.hs').forEach(h => h.classList.toggle('on', h.getAttribute('data-s') === id));
 }
 document.querySelectorAll('.hs').forEach(h => {
   h.addEventListener('click', () => {
     const t = document.getElementById(h.getAttribute('data-s'));
-    if (t) lenis.scrollTo(t, { offset:-80 });
+    if (t) lenis.scrollTo(t, { offset: -80 });
   });
 });
 document.querySelectorAll('[data-section]').forEach(el => {
   ScrollTrigger.create({
     trigger: el, start:'top 55%', end:'bottom 55%',
-    onEnter: ()    => setHud(el.getAttribute('data-section')),
-    onEnterBack: ()=> setHud(el.getAttribute('data-section')),
+    onEnter: ()     => setHud(el.getAttribute('data-section')),
+    onEnterBack: () => setHud(el.getAttribute('data-section')),
   });
 });
-// Nav links
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
     const t = document.querySelector(a.getAttribute('href'));
-    if (t) { e.preventDefault(); lenis.scrollTo(t, { offset:-90 }); }
+    if (t) { e.preventDefault(); lenis.scrollTo(t, { offset: -90 }); }
   });
 });
 
 /* ─────────────────────────────────────────────────
-   STICKY STACK TRANSITIONS
-   Each .pw wrapper: first half = panel visible,
-   second half = panel exits (scale→0.82, blur→12px)
-   Next .pi enters: scale 1.25→1.0, opacity 0→1
+   STICKY STACK — depth transitions
+   Entrance: scale 1.18 → 1.0 (fast scrub: 0.7)
+   Exit: scale 0.85 + blur, starts at 65% of wrapper
 ───────────────────────────────────────────────── */
 const pws = gsap.utils.toArray('.pw');
 pws.forEach((wrap, i) => {
-  const pi  = wrap.querySelector('.pi');
-  const nextWrap = pws[i + 1];
+  const pi = wrap.querySelector('.pi');
+  const hasNext = pws[i + 1];
 
-  // ── ENTRANCE (scale in from "behind") — skip first panel ──
   if (i > 0) {
     gsap.fromTo(pi,
-      { scale:1.22, opacity:0, filter:'blur(10px)' },
-      {
-        scale:1.0, opacity:1, filter:'blur(0px)', ease:'none',
-        scrollTrigger: {
-          trigger: wrap, start:'top bottom', end:'top top', scrub:2,
-        }
-      }
+      { scale: 1.18, opacity: 0, filter: 'blur(10px)' },
+      { scale: 1.0,  opacity: 1, filter: 'blur(0px)', ease: 'none',
+        scrollTrigger: { trigger: wrap, start: 'top bottom', end: 'top top', scrub: 0.7 } }
     );
   }
-
-  // ── EXIT (scale down & blur as next panel covers) ──
-  if (nextWrap) {
+  if (hasNext) {
     gsap.to(pi, {
-      scale:0.82, filter:'blur(14px)', opacity:0.45, ease:'none',
-      scrollTrigger: {
-        trigger: wrap,
-        // start when we're 50% through the wrapper, end at wrapper bottom
-        start:'50% top', end:'bottom top', scrub:2,
-      }
+      scale: 0.84, filter: 'blur(14px)', opacity: 0.4, ease: 'none',
+      scrollTrigger: { trigger: wrap, start: '65% top', end: 'bottom top', scrub: 0.7 }
     });
   }
 });
 
 /* ─────────────────────────────────────────────────
-   HERO — SCROLL-LINKED HARSHITHA EXPANSION
-   As user scrolls through hero's 280vh:
-   • Name scales up + gradient sweeps across text
-   • Supporting text fades out
+   HERO — scroll-linked HARSHITHA expansion
+   Over the first 45% of the 170vh hero wrapper
+   the name scales and the gradient sweeps.
 ───────────────────────────────────────────────── */
-const heroScroll = gsap.timeline({
-  scrollTrigger: {
-    trigger: '#pw-hero',
-    start: 'top top',
-    end: '45% top',   // first 45% of 280vh = ~126vh of scroll
-    scrub: 2,
-  }
-});
-heroScroll
-  .to('#hero-name', { scale:1.9, backgroundPosition:'200% 50%', ease:'none' }, 0)
-  .to('.hero-tag',   { opacity:0, y:-20, ease:'none' }, 0)
-  .to('.hero-sub',   { opacity:0, y:-15, ease:'none' }, 0.02)
-  .to('.hero-role',  { opacity:0, y:-12, ease:'none' }, 0.04)
-  .to('.hero-bio',   { opacity:0, y:-10, ease:'none' }, 0.06)
-  .to('#hero-btns',  { opacity:0, y:-8,  ease:'none' }, 0.08)
-  .to('#scroll-hint',{ opacity:0,        ease:'none' }, 0);
+gsap.timeline({
+  scrollTrigger: { trigger:'#pw-hero', start:'top top', end:'42% top', scrub: 1.2 }
+})
+  .to('#hero-name',   { scale: 1.85, backgroundPosition:'200% 50%', ease:'none' }, 0)
+  .to('.hero-tag',    { opacity: 0, y: -18, ease:'none' }, 0)
+  .to('.hero-sub',    { opacity: 0, y: -14, ease:'none' }, 0.03)
+  .to('.hero-role',   { opacity: 0, y: -10, ease:'none' }, 0.05)
+  .to('.hero-bio',    { opacity: 0, y: -8,  ease:'none' }, 0.07)
+  .to('#hero-btns',   { opacity: 0, y: -6,  ease:'none' }, 0.09)
+  .to('#scroll-hint', { opacity: 0, ease:'none' }, 0);
 
 /* ─────────────────────────────────────────────────
-   ABOUT — zoom in from distance after hero
+   PARALLAX SANDWICH — featured projects only
 ───────────────────────────────────────────────── */
-const aboutPi = document.querySelector('#p-about .pi');
-// Eyebrow + heading wipe-reveals
-gsap.from('#p-about .eyebrow span', {
-  y:'110%', duration:.75, ease:'power3.out',
-  scrollTrigger:{ trigger:'#pw-about', start:'top 60%', once:true }
-});
-gsap.from('#p-about .sh span', {
-  y:'110%', duration:1, ease:'power4.out', stagger:.12,
-  scrollTrigger:{ trigger:'#pw-about', start:'top 58%', once:true }
-});
-gsap.from('#p-about .al p', {
-  opacity:0, y:22, duration:.75, ease:'power3.out', stagger:.1,
-  scrollTrigger:{ trigger:'#pw-about', start:'top 54%', once:true }
-});
-gsap.from('#p-about .fact', {
-  opacity:0, x:35, duration:.65, ease:'power3.out', stagger:.08,
-  scrollTrigger:{ trigger:'#pw-about .facts', start:'top 58%', once:true }
-});
-
-/* ─────────────────────────────────────────────────
-   EXPERIENCE — wipe + card reveals
-───────────────────────────────────────────────── */
-gsap.from('#p-exp .eyebrow span', {
-  y:'110%', duration:.75, ease:'power3.out',
-  scrollTrigger:{ trigger:'#pw-exp', start:'top 58%', once:true }
-});
-gsap.from('#p-exp .sh span', {
-  y:'110%', duration:1, ease:'power4.out', stagger:.12,
-  scrollTrigger:{ trigger:'#pw-exp', start:'top 56%', once:true }
-});
-gsap.from('.ecard', {
-  opacity:0, y:50, duration:.9, ease:'power3.out', stagger:.15,
-  scrollTrigger:{ trigger:'#pw-exp .exp-g', start:'top 60%', once:true }
-});
-
-/* ─────────────────────────────────────────────────
-   FEATURED PROJECTS — parallax sandwich + text reveals
-───────────────────────────────────────────────── */
-[
-  { wrap:'#pw-wl', bg:'#wl-bg', fg:'#wl-fg' },
-  { wrap:'#pw-ss', bg:'#ss-bg', fg:'#ss-fg' },
-].forEach(({ wrap, bg, fg }) => {
+[{ bg:'#wl-bg', fg:'#wl-fg', wrap:'#pw-wl' },
+ { bg:'#ss-bg', fg:'#ss-fg', wrap:'#pw-ss' }].forEach(({ bg, fg, wrap }) => {
   const bgEl = document.querySelector(bg);
   const fgEl = document.querySelector(fg);
-  const panel = document.querySelector(wrap);
-  const num   = panel.querySelector('.pp-num span');
-  const title = panel.querySelector('.pp-title span');
-  const desc  = panel.querySelector('.pp-desc');
-  const stack = panel.querySelector('.pp-stack');
-  const links = panel.querySelector('.pp-links');
-
-  // BG layer: scale 1.2→1.0 (moves slowest — parallax depth)
   if (bgEl) gsap.fromTo(bgEl,
-    { scale:1.18, y:'-8%' },
-    { scale:1.0, y:'8%', ease:'none',
-      scrollTrigger:{ trigger:panel, start:'top bottom', end:'bottom top', scrub:true } }
+    { scale: 1.18, y:'-8%' },
+    { scale: 1.0,  y: '8%', ease:'none',
+      scrollTrigger: { trigger: wrap, start:'top bottom', end:'bottom top', scrub: true } }
   );
-  // FG ring: moves opposite direction (feels closer)
   if (fgEl) gsap.to(fgEl, {
-    y:'-12%', rotate:45, ease:'none',
-    scrollTrigger:{ trigger:panel, start:'top bottom', end:'bottom top', scrub:true }
+    y:'-14%', rotate: 50, ease:'none',
+    scrollTrigger: { trigger: wrap, start:'top bottom', end:'bottom top', scrub: true }
   });
-
-  // Number wipe
-  if (num) gsap.from(num, { y:'110%', duration:.7, ease:'power3.out', scrollTrigger:{ trigger:panel, start:'top 65%', once:true } });
-  // Title wipe
-  if (title) gsap.from(title, { y:'110%', duration:1.1, ease:'power4.out', scrollTrigger:{ trigger:panel, start:'top 62%', once:true } });
-  // Desc blur-to-focus
-  if (desc) gsap.from(desc, { opacity:0, filter:'blur(12px)', y:28, duration:1.2, ease:'power3.out', scrollTrigger:{ trigger:panel, start:'top 58%', once:true } });
-  // Stack + links fade-up
-  if (stack) gsap.from([stack, links].filter(Boolean), { opacity:0, y:22, duration:.8, ease:'power3.out', stagger:.12, scrollTrigger:{ trigger:panel, start:'top 54%', once:true } });
 });
 
 /* ─────────────────────────────────────────────────
-   MORE PROJECTS GRID
+   CONTENT POP-INS
+   Triggered at 'top top' — fires the instant the
+   panel wrapper reaches the viewport top, meaning
+   the depth-entrance animation has just completed
+   and the panel is fully visible. Elements burst
+   into existence with staggered back.out easing.
 ───────────────────────────────────────────────── */
-gsap.from('#p-more .eyebrow span', { y:'110%', duration:.75, ease:'power3.out', scrollTrigger:{ trigger:'#pw-more', start:'top 58%', once:true } });
-gsap.from('#p-more .sh span', { y:'110%', duration:1, ease:'power4.out', stagger:.12, scrollTrigger:{ trigger:'#pw-more', start:'top 56%', once:true } });
-gsap.from('.pc', { opacity:0, y:42, duration:.75, ease:'power3.out', stagger:.1, scrollTrigger:{ trigger:'#p-more .pg', start:'top 62%', once:true } });
+
+/* ABOUT */
+gsap.from('#p-about .eyebrow span',
+  { yPercent:110, duration:.55, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-about', start:'top top', once:true } });
+gsap.from('#p-about .sh span',
+  { yPercent:110, duration:.7, ease:'power4.out', stagger:.1,
+    scrollTrigger:{ trigger:'#pw-about', start:'top top', once:true } });
+gsap.from('#p-about .al p',
+  { opacity:0, y:30, duration:.5, ease:'power3.out', stagger:.09,
+    scrollTrigger:{ trigger:'#pw-about', start:'top top', once:true } });
+gsap.from('#p-about .fact',
+  { opacity:0, x:45, scale:.94, duration:.45, ease:'back.out(1.7)', stagger:.07,
+    scrollTrigger:{ trigger:'#pw-about', start:'top top', once:true } });
+
+/* EXPERIENCE */
+gsap.from('#p-exp .eyebrow span',
+  { yPercent:110, duration:.55, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-exp', start:'top top', once:true } });
+gsap.from('#p-exp .sh span',
+  { yPercent:110, duration:.7, ease:'power4.out', stagger:.1,
+    scrollTrigger:{ trigger:'#pw-exp', start:'top top', once:true } });
+gsap.from('.ecard',
+  { opacity:0, y:65, scale:.9, duration:.6, ease:'back.out(1.5)', stagger:.13,
+    scrollTrigger:{ trigger:'#pw-exp', start:'top top', once:true } });
+
+/* WEALTHLENS */
+gsap.from('#p-wl .pp-num span',
+  { yPercent:110, duration:.5, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-wl', start:'top top', once:true } });
+gsap.from('#p-wl .pp-title span',
+  { yPercent:110, duration:.8, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-wl', start:'top top', once:true } });
+gsap.from('#p-wl .pp-desc',
+  { opacity:0, filter:'blur(10px)', y:24, duration:.7, ease:'power3.out',
+    scrollTrigger:{ trigger:'#pw-wl', start:'top top', once:true } });
+gsap.from(['#p-wl .pp-stack','#p-wl .pp-links'],
+  { opacity:0, y:20, duration:.5, ease:'power3.out', stagger:.12,
+    scrollTrigger:{ trigger:'#pw-wl', start:'top top', once:true } });
+
+/* SIGNSYNC */
+gsap.from('#p-ss .pp-num span',
+  { yPercent:110, duration:.5, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-ss', start:'top top', once:true } });
+gsap.from('#p-ss .pp-title span',
+  { yPercent:110, duration:.8, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-ss', start:'top top', once:true } });
+gsap.from('#p-ss .pp-desc',
+  { opacity:0, filter:'blur(10px)', y:24, duration:.7, ease:'power3.out',
+    scrollTrigger:{ trigger:'#pw-ss', start:'top top', once:true } });
+gsap.from(['#p-ss .pp-stack','#p-ss .pp-links'],
+  { opacity:0, y:20, duration:.5, ease:'power3.out', stagger:.12,
+    scrollTrigger:{ trigger:'#pw-ss', start:'top top', once:true } });
+
+/* MORE PROJECTS */
+gsap.from('#p-more .eyebrow span',
+  { yPercent:110, duration:.55, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-more', start:'top top', once:true } });
+gsap.from('#p-more .sh span',
+  { yPercent:110, duration:.7, ease:'power4.out', stagger:.1,
+    scrollTrigger:{ trigger:'#pw-more', start:'top top', once:true } });
+gsap.from('.pc',
+  { opacity:0, y:55, scale:.91, duration:.55, ease:'back.out(1.5)', stagger:.1,
+    scrollTrigger:{ trigger:'#pw-more', start:'top top', once:true } });
+
+/* SKILLS */
+gsap.from('#p-skills .eyebrow span',
+  { yPercent:110, duration:.55, ease:'power4.out',
+    scrollTrigger:{ trigger:'#pw-skills', start:'top top', once:true } });
+gsap.from('#p-skills .sk-intro',
+  { opacity:0, y:30, duration:.55, ease:'power3.out',
+    scrollTrigger:{ trigger:'#pw-skills', start:'top top', once:true } });
+gsap.from('.skcat',
+  { opacity:0, y:40, scale:.93, duration:.5, ease:'back.out(1.5)', stagger:.09,
+    scrollTrigger:{ trigger:'#pw-skills', start:'top top', once:true } });
+gsap.from('.cert-card',
+  { opacity:0, y:32, scale:.95, duration:.5, ease:'back.out(1.4)',
+    scrollTrigger:{ trigger:'#pw-skills', start:'top top', once:true } });
+
+/* CONTACT */
+gsap.from('.ch span',
+  { yPercent:110, duration:.75, ease:'power4.out', stagger:.09,
+    scrollTrigger:{ trigger:'#pw-contact', start:'top top', once:true } });
+gsap.from(['.csub','.cemail'],
+  { opacity:0, y:24, duration:.5, ease:'power3.out', stagger:.12,
+    scrollTrigger:{ trigger:'#pw-contact', start:'top top', once:true } });
+gsap.from('.soc',
+  { opacity:0, y:35, scale:.9, duration:.45, ease:'back.out(1.6)', stagger:.08,
+    scrollTrigger:{ trigger:'#pw-contact', start:'top top', once:true } });
 
 /* ─────────────────────────────────────────────────
-   SKILLS
+   3D TILT
 ───────────────────────────────────────────────── */
-gsap.from('#p-skills .eyebrow span', { y:'110%', duration:.75, ease:'power3.out', scrollTrigger:{ trigger:'#pw-skills', start:'top 58%', once:true } });
-gsap.from('.skcat', { opacity:0, y:30, duration:.7, ease:'power3.out', stagger:.11, scrollTrigger:{ trigger:'#p-skills .sk-cats', start:'top 62%', once:true } });
-gsap.from('.cert-card', { opacity:0, y:28, duration:.8, ease:'power3.out', scrollTrigger:{ trigger:'.cert-wrap', start:'top 65%', once:true } });
-
-/* ─────────────────────────────────────────────────
-   CONTACT
-───────────────────────────────────────────────── */
-gsap.from('.ch span', { y:'110%', duration:1.15, ease:'power4.out', stagger:.1, scrollTrigger:{ trigger:'#pw-contact', start:'top 68%', once:true } });
-gsap.from(['.csub','.cemail','.soc-g'], { opacity:0, y:26, duration:.9, ease:'power3.out', stagger:.13, scrollTrigger:{ trigger:'#pw-contact', start:'top 60%', once:true } });
-
-/* ─────────────────────────────────────────────────
-   3D TILT on cards
-───────────────────────────────────────────────── */
-function addTilt(sel, s=7) {
+function addTilt(sel, s) {
   document.querySelectorAll(sel).forEach(c => {
     c.addEventListener('mousemove', e => {
-      const r = c.getBoundingClientRect();
+      const r  = c.getBoundingClientRect();
       const rx = ((e.clientY - r.top  - r.height/2) / (r.height/2)) * -s;
       const ry = ((e.clientX - r.left - r.width /2) / (r.width /2)) *  s;
       c.style.transform = `perspective(900px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(8px)`;
@@ -1067,39 +1064,32 @@ function addTilt(sel, s=7) {
     c.addEventListener('mouseleave', () => c.style.transform = '');
   });
 }
-addTilt('.ecard', 6);
-addTilt('.pc', 5);
-addTilt('.soc', 4);
+addTilt('.ecard', 6); addTilt('.pc', 5); addTilt('.soc', 4);
 
-/* ─────────────────────────────────────────────────
-   HERO ENTRANCE animations (on load)
-───────────────────────────────────────────────── */
-const heroIn = gsap.timeline({ defaults:{ ease:'power3.out' } });
-heroIn
-  .from('.hero-tag',  { opacity:0, y:18, duration:.8 }, .1)
-  .from('#hero-name', { opacity:0, y:36, duration:.95 }, .28)
-  .from('.hero-sub',  { opacity:0, y:20, duration:.8 }, .44)
-  .from('.hero-role', { opacity:0, y:16, duration:.75 }, .56)
-  .from('.hero-bio',  { opacity:0, y:16, duration:.75 }, .68)
-  .from('#hero-btns', { opacity:0, y:14, duration:.75 }, .80)
-  .from('#scroll-hint',{ opacity:0, duration:.7 }, 1.05);
+/* ── HERO ENTRANCE (on load) ── */
+gsap.timeline({ defaults:{ ease:'power3.out' } })
+  .from('.hero-tag',   { opacity:0, y:18, duration:.8  }, .1)
+  .from('#hero-name',  { opacity:0, y:38, duration:.95 }, .28)
+  .from('.hero-sub',   { opacity:0, y:20, duration:.8  }, .44)
+  .from('.hero-role',  { opacity:0, y:16, duration:.75 }, .56)
+  .from('.hero-bio',   { opacity:0, y:16, duration:.75 }, .68)
+  .from('#hero-btns',  { opacity:0, y:14, duration:.75 }, .80)
+  .from('#scroll-hint',{ opacity:0,       duration:.7  }, 1.05);
 
-/* ─────────────────────────────────────────────────
-   TYPING ANIMATION
-───────────────────────────────────────────────── */
+/* ── TYPING ── */
 const roles = ['Backend Engineer','API Developer','AI Researcher','CS @ UCF','Problem Solver'];
 let ri=0, ci=0, del=false;
 const tel = document.getElementById('typed');
 function tick() {
   const w = roles[ri];
   if (!del) {
-    tel.textContent = w.slice(0,++ci);
-    if (ci===w.length) { setTimeout(()=>{ del=true; tick(); },1900); return; }
+    tel.textContent = w.slice(0, ++ci);
+    if (ci === w.length) { setTimeout(() => { del = true; tick(); }, 1900); return; }
   } else {
-    tel.textContent = w.slice(0,--ci);
-    if (ci===0) { del=false; ri=(ri+1)%roles.length; }
+    tel.textContent = w.slice(0, --ci);
+    if (ci === 0) { del = false; ri = (ri + 1) % roles.length; }
   }
-  setTimeout(tick, del?42:82);
+  setTimeout(tick, del ? 42 : 82);
 }
 tick();
 </script>
