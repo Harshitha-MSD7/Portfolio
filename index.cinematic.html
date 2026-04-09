@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Harshitha Sathees Kumar — Cinematic Narrative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000000;
+      --text: #f2f8f8;
+      --muted: rgba(242, 248, 248, 0.58);
+      --accent: #00f5d4;
+      --accent-soft: rgba(0, 245, 212, 0.2);
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: var(--bg); color: var(--text); font-family: "Inter", sans-serif; }
+    body { overflow-x: hidden; cursor: none; }
+
+    .hud {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 56px;
+      z-index: 999;
+      display: grid;
+      align-items: center;
+      padding: 0 20px;
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.66);
+      border-bottom: 1px solid var(--border);
+    }
+    .hud-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      margin-bottom: 7px;
+    }
+    .research-track {
+      width: min(420px, 82vw);
+      height: 5px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+    .research-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #1affff);
+      box-shadow: 0 0 18px var(--accent-soft);
+      transform-origin: left center;
+    }
+
+    .cursor-dot,
+    .cursor-ring {
+      position: fixed;
+      pointer-events: none;
+      z-index: 1000;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+    }
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .cursor-ring {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 245, 212, 0.6);
+      transition: width 0.2s ease, height 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+    }
+    .cursor-ring.active {
+      width: 72px;
+      height: 72px;
+      border-color: rgba(26, 255, 255, 0.95);
+      background-color: rgba(0, 245, 212, 0.17);
+    }
+
+    .stack-wrap {
+      position: relative;
+      z-index: 1;
+      padding-top: 56px;
+    }
+    .panel {
+      height: 100vh;
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      isolation: isolate;
+      will-change: transform, filter;
+      background: #000;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .panel-content {
+      width: min(1080px, 92vw);
+      display: grid;
+      gap: 28px;
+      align-items: center;
+    }
+
+    .kicker {
+      color: var(--accent);
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    h1, h2 {
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.03em;
+    }
+    h1 { font-size: clamp(3.2rem, 14vw, 12rem); }
+    h2 { font-size: clamp(2.1rem, 7vw, 5rem); }
+    p {
+      max-width: 64ch;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: clamp(0.95rem, 1.7vw, 1.2rem);
+    }
+
+    .name-wrap {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 65vh;
+    }
+    .name-track {
+      display: inline-flex;
+      gap: 0.02em;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: clamp(2.3rem, 10vw, 9rem);
+      font-weight: 900;
+      position: relative;
+      z-index: 2;
+    }
+    .name-track span {
+      display: inline-block;
+      transform-origin: center bottom;
+      will-change: transform, color;
+    }
+    .video-mask {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.85);
+      will-change: opacity, transform;
+    }
+    .video-mask video {
+      width: min(1100px, 95vw);
+      height: 60vh;
+      object-fit: cover;
+      border-radius: 20px;
+      filter: contrast(1.2) saturate(1.15);
+      mix-blend-mode: screen;
+      opacity: 0.95;
+    }
+    .video-mask::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(0, 245, 212, 0.25), transparent 50%),
+                  radial-gradient(circle at 68% 56%, rgba(255, 255, 255, 0.18), transparent 45%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .parallax-sandwich {
+      position: relative;
+      width: min(1080px, 92vw);
+      height: min(62vh, 620px);
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      background: #050505;
+    }
+    .layer-bg,
+    .layer-mid,
+    .layer-front,
+    .light-leak {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      will-change: transform;
+    }
+    .layer-bg {
+      background: linear-gradient(120deg, #071412 0%, #001616 40%, #000 90%);
+      opacity: 0.85;
+    }
+    .layer-mid {
+      color: rgba(0, 245, 212, 0.55);
+      text-align: center;
+      font-size: clamp(1rem, 2vw, 2rem);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+    }
+    .layer-front img {
+      width: 40%;
+      min-width: 240px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 26px 80px rgba(0, 0, 0, 0.8);
+    }
+    .light-leak {
+      background: radial-gradient(circle at 12% 18%, rgba(0, 245, 212, 0.36), transparent 40%),
+                  radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.3), transparent 42%);
+      mix-blend-mode: screen;
+      opacity: 0.65;
+      pointer-events: none;
+    }
+
+    .project-grid {
+      width: min(1080px, 92vw);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+    .project-card {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      background: linear-gradient(165deg, rgba(10, 10, 10, 0.86), rgba(0, 0, 0, 0.95));
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+    .project-card:hover {
+      transform: translateY(-6px) scale(1.02);
+      border-color: rgba(0, 245, 212, 0.5);
+    }
+    .project-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 860px) {
+      .hud { height: 52px; }
+      .stack-wrap { padding-top: 52px; }
+      .name-track { letter-spacing: 0.03em; }
+      .video-mask video { height: 52vh; }
+      .cursor-dot, .cursor-ring { display: none; }
+      body { cursor: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hud">
+    <div>
+      <div class="hud-label">Research Status</div>
+      <div class="research-track"><div class="research-progress" id="researchProgress"></div></div>
+    </div>
+  </div>
+
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"></div>
+
+  <main class="stack-wrap" id="stackWrap">
+    <section class="panel panel-hero">
+      <div class="panel-content">
+        <span class="kicker">Cinematic Portfolio Protocol</span>
+        <h1>A Hyperreal Narrative Interface</h1>
+        <p>Pure black canvas, electric teal energy, and an inertial scroll choreography designed to feel like stepping into a live research film.</p>
+      </div>
+    </section>
+
+    <section class="panel panel-name">
+      <div class="panel-content name-wrap">
+        <div class="video-mask" id="videoMask">
+          <video autoplay muted loop playsinline preload="metadata" poster="https://images.unsplash.com/photo-1518779578993-ec3579fee39f?q=80&w=1200&auto=format&fit=crop">
+            <source src="https://cdn.coverr.co/videos/coverr-moody-night-1579/1080p.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <h2 class="name-track" id="nameTrack" aria-label="HARSHITHA">
+          <span>H</span><span>A</span><span>R</span><span>S</span><span>H</span><span>I</span><span>T</span><span>H</span><span>A</span>
+        </h2>
+      </div>
+    </section>
+
+    <section class="panel panel-research">
+      <div class="panel-content">
+        <span class="kicker">Parallax Sandwich</span>
+        <div class="parallax-sandwich" id="sandwichA">
+          <div class="layer-bg" data-depth="0.35"></div>
+          <div class="layer-mid" data-depth="0.7">Research Lab • WealthLens • Systems</div>
+          <div class="layer-front" data-depth="1.1">
+            <img src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?q=80&w=1200&auto=format&fit=crop" alt="Placeholder research visualization" />
+          </div>
+          <div class="light-leak" data-depth="0.55"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel panel-projects">
+      <div class="panel-content">
+        <span class="kicker">Projects</span>
+        <h2>Data Stories with Cinematic Tension</h2>
+        <div class="project-grid">
+          <article class="project-card" tabindex="0">
+            <h3>WealthLens</h3>
+            <p>3D hover diagnostics for portfolio intelligence with layered risk storytelling and inertial navigation.</p>
+          </article>
+          <article class="project-card" tabindex="0">
+            <h3>Research Lab</h3>
+            <p>A high-end data theater blending live metrics, uncertainty maps, and narrative reveal mechanics.</p>
+          </article>
+          <article class="project-card" tabindex="0">
+            <h3>Signal Atlas</h3>
+            <p>Cross-domain pattern explorer with cinematic transitions between macro context and micro insight.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    const lenis = new Lenis({
+      duration: 1.15,
+      smoothWheel: true,
+      smoothTouch: false,
+      lerp: 0.085
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    lenis.on("scroll", ScrollTrigger.update);
+
+    const panels = gsap.utils.toArray(".panel");
+
+    panels.forEach((panel, index) => {
+      ScrollTrigger.create({
+        trigger: panel,
+        start: "top top",
+        end: "+=100%",
+        pin: true,
+        pinSpacing: false,
+        scrub: true,
+        onUpdate: self => {
+          const prev = panels[index - 1];
+          if (prev) {
+            const p = self.progress;
+            gsap.set(prev, {
+              scale: 1 - p * 0.2,
+              filter: `blur(${(p * 10).toFixed(2)}px)`,
+              transformOrigin: "center center"
+            });
+            gsap.set(panel, {
+              scale: 1.5 - p * 0.5,
+              opacity: Math.min(1, 0.7 + p * 0.3)
+            });
+          }
+        }
+      });
+    });
+
+    const letters = gsap.utils.toArray("#nameTrack span");
+    const nameTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: ".panel-name",
+        start: "top top",
+        end: "+=140%",
+        scrub: true
+      }
+    });
+
+    nameTl
+      .to(letters, {
+        scaleY: 1.6,
+        color: "#00f5d4",
+        stagger: 0.05,
+        ease: "none"
+      }, 0)
+      .to("#nameTrack", {
+        letterSpacing: "0.22em",
+        scale: 1.07,
+        ease: "none"
+      }, 0)
+      .to("#videoMask", {
+        opacity: 1,
+        scale: 1,
+        ease: "none"
+      }, 0.15);
+
+    const researchBar = document.getElementById("researchProgress");
+    ScrollTrigger.create({
+      trigger: "#stackWrap",
+      start: "top top",
+      end: "bottom bottom",
+      scrub: true,
+      onUpdate: self => {
+        researchBar.style.width = `${(self.progress * 100).toFixed(2)}%`;
+      }
+    });
+
+    const cursorDot = document.getElementById("cursorDot");
+    const cursorRing = document.getElementById("cursorRing");
+
+    window.addEventListener("pointermove", event => {
+      gsap.to(cursorDot, { x: event.clientX, y: event.clientY, duration: 0.08, overwrite: "auto" });
+      gsap.to(cursorRing, { x: event.clientX, y: event.clientY, duration: 0.24, overwrite: "auto" });
+    });
+
+    document.querySelectorAll(".project-card").forEach(card => {
+      ["mouseenter", "focusin"].forEach(evt => card.addEventListener(evt, () => cursorRing.classList.add("active")));
+      ["mouseleave", "focusout"].forEach(evt => card.addEventListener(evt, () => cursorRing.classList.remove("active")));
+    });
+
+    gsap.utils.toArray(".parallax-sandwich").forEach(sandwich => {
+      const layers = sandwich.querySelectorAll("[data-depth]");
+      ScrollTrigger.create({
+        trigger: sandwich,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+        onUpdate: self => {
+          const y = (self.progress - 0.5) * 140;
+          layers.forEach(layer => {
+            const depth = Number(layer.getAttribute("data-depth"));
+            gsap.set(layer, { y: y * depth, scale: 1 + depth * 0.03 });
+          });
+        }
+      });
+    });
+
+    // performance guard: keep heavy effects off tiny devices
+    ScrollTrigger.matchMedia({
+      "(max-width: 860px)": function () {
+        gsap.set(".panel", { filter: "none", scale: 1 });
+      }
+    });
+  </script>
+</body>
+</html>
